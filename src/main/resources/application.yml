@@ -12,3 +12,6 @@ spring:
     password: klimonov23
   flyway:
     baseline-on-migrate: true
+
+server:
+  port: 8081

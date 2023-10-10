@@ -21,7 +21,7 @@ public class Employee {
     @SequenceGenerator(name=SEQ_NAME,sequenceName = SEQ_NAME,allocationSize = 1)
     Long id;
     String name;
-    String position;
+    String position; //должность
     @ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id", nullable = false)
     Department department;
