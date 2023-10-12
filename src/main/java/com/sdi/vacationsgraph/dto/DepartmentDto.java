@@ -1,8 +1,12 @@
 package com.sdi.vacationsgraph.dto;
 
-import com.sdi.vacationsgraph.domain.Department;
+
+import com.sdi.vacationsgraph.domain.Employee;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Setter
 @Getter
@@ -10,9 +14,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class EmployeeDto {
+public class DepartmentDto {
     String name;
-    String position; //должность
-    String department;
-    String hired;
+    EmployeeDto boss;
+    List<EmployeeDto> employees;
 }

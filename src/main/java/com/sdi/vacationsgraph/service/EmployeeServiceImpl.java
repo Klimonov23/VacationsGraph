@@ -3,24 +3,26 @@ package com.sdi.vacationsgraph.service;
 import com.sdi.vacationsgraph.domain.Employee;
 import com.sdi.vacationsgraph.dto.EmployeeDto;
 import com.sdi.vacationsgraph.dto.EmployeeUpdDto;
+import com.sdi.vacationsgraph.repository.DepartmentRepository;
 import com.sdi.vacationsgraph.repository.EmployeeRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Service
 @Slf4j
 public class EmployeeServiceImpl implements EmployeeService {
 
     private  final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
     @Autowired
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, DepartmentRepository departmentRepository) {
         this.employeeRepository = employeeRepository;
+        this.departmentRepository = departmentRepository;
     }
 
     @Override
@@ -37,10 +39,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee createEmployee(EmployeeDto employeeDto) {
         if (employeeDto==null) return employeeRepository.save(new Employee());
-
+        log.info(departmentRepository.findByName("Sales").toString());
         Employee employee=Employee.builder()
-                .department(employeeDto.getDepartment())
-                .hired(LocalDateTime.now())
+                .department(departmentRepository.findByName(employeeDto.getDepartment()))
+                .hired(LocalDate.now())
                 .name(employeeDto.getName())
                 .position(employeeDto.getPosition())
                 .build();

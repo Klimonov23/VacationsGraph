@@ -1,11 +1,13 @@
 package com.sdi.vacationsgraph.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 @Entity
@@ -22,10 +24,11 @@ public class Employee {
     Long id;
     String name;
     String position; //должность
+    @JsonIgnore
     @ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id", nullable = false)
     Department department;
-    LocalDateTime hired;
+    LocalDate hired;
     Integer vacationDays;
     @OneToMany( mappedBy = "employee",cascade = CascadeType.ALL, orphanRemoval = true)
     List<Vacation> list;

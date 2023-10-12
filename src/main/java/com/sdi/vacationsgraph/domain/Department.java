@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Table(name = "departments")
+
 public class Department {
     private static final String SEQ_NAME="department_seq";
     @Id
@@ -20,7 +21,7 @@ public class Department {
     @SequenceGenerator(name=SEQ_NAME,sequenceName = SEQ_NAME,allocationSize = 1)
     Long id;
     String name;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="employee_id")
     Employee boss;
     @OneToMany(mappedBy = "department", fetch = FetchType.LAZY,
