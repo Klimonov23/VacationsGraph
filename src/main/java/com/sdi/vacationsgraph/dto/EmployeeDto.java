@@ -1,8 +1,10 @@
 package com.sdi.vacationsgraph.dto;
 
-import com.sdi.vacationsgraph.domain.Department;
+import com.sdi.vacationsgraph.domain.Vacation;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Setter
 @Getter
@@ -11,8 +13,10 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmployeeDto {
-    String name;
-    String position; //должность
-    String department;
-    String hired;
+     String name;
+     String position; //должность
+     String departmentName;
+     String  hired;
+     Integer vacationDays;
+     List<Vacation> list;
 }

@@ -1,8 +1,8 @@
 package com.sdi.vacationsgraph.service;
 
 import com.sdi.vacationsgraph.domain.Employee;
+import com.sdi.vacationsgraph.domain.exceptions.NotFoundException;
 import com.sdi.vacationsgraph.dto.EmployeeDto;
-import com.sdi.vacationsgraph.dto.EmployeeUpdDto;
 import com.sdi.vacationsgraph.repository.DepartmentRepository;
 import com.sdi.vacationsgraph.repository.EmployeeRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @Slf4j
@@ -32,19 +32,20 @@ public class EmployeeServiceImpl implements EmployeeService {
                 () -> "Name for employee '" + name + "' must not be empty");
         Employee person=employeeRepository.findByName(name);
         if (person ==null)
-            throw new RuntimeException("Such person doesn't exist");
+            throw new NotFoundException("Such person doesn't exist");
         return person;
     }
 
     @Override
     public Employee createEmployee(EmployeeDto employeeDto) {
         if (employeeDto==null) return employeeRepository.save(new Employee());
-        log.info(departmentRepository.findByName("Sales").toString());
+        log.info(departmentRepository.findByName(employeeDto.getDepartmentName()).toString());
         Employee employee=Employee.builder()
-                .department(departmentRepository.findByName(employeeDto.getDepartment()))
-                .hired(LocalDate.now())
+                .department(departmentRepository.findByName(employeeDto.getDepartmentName()))
+                .hired(LocalDate.parse(employeeDto.getHired(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .name(employeeDto.getName())
                 .position(employeeDto.getPosition())
+                .vacationDays(employeeDto.getVacationDays())
                 .build();
 
         return employeeRepository.save(employee);
@@ -53,13 +54,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     //TODO добавить проверку сравнения дто и объекта
-    public Employee updateEmployee(EmployeeUpdDto employeeDto) {
+    public Employee updateEmployee(EmployeeDto employeeDto) {
         Employee savedUser=employeeRepository.findByName(employeeDto.getName());
         if (savedUser==null) throw new RuntimeException("not found"+employeeDto.getName());
         boolean isChanged=false;
 
         Employee employee=Employee.builder()
-                .department(employeeDto.getDepartment())
+                .department(departmentRepository.findByName(employeeDto.getDepartmentName()))
                 .hired(savedUser.getHired())
                 .name(employeeDto.getName())
                 .position(employeeDto.getPosition())
@@ -73,8 +74,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void deleteEmployee(String name) {
         Employee person=employeeRepository.findByName(name);
         if (person==null)  {
-            log.info("such person doesn't exist");
-            return;
+            throw new NotFoundException("Such person doesn't exist");
         }
          employeeRepository.delete(person);
     }
